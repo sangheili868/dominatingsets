@@ -16,15 +16,13 @@ nodes=[]
 numNodes, numEdges = 
 with open(inFile) as f:
 	next(f)
-	for line in f:
-		
-	
+	for line in f:		
 
 # Get GDVs
 for line in open("counts.out"):
 	GDVs.append(line[:-1].split(" "))
 call(["./orca", "4", inFile, "counts.out"])
-GDVs=[]
+GDVs=[] #GDVs[node][orbit] = count
 for line in open("counts.out"):
 	GDVs.append(line[:-1].split(" "))
 print GDVs
