@@ -51,8 +51,9 @@ for i in range(0,numNodes):
 		DominatingSet.append(i)
 	elif(GDV[i][0]==1):
 		for n in nodes[i].neighborList:
-			if(nodes[i].isDominated==0):
+			if(nodes[n.id].isDominating==0):
 				DominatingSet.append(n.id)
+				nodes[n.id].isDominating=1
 for i in range(0,numNodes):
 	if(GDV[i][2]==1 and GDV[i][0]==2):
 		degrees=[]
