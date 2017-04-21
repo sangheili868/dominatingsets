@@ -36,6 +36,7 @@ with open(inFile) as f:
 		nodes[origin].neighborList.add(destination)
 		nodes[destination].neighborList.add(origin)	
 	
+initialNodes=nodes
 # Get GDVs
 call(["./orca", "4", inFile, "counts.out"])
 GDV=[]
@@ -45,6 +46,7 @@ for line in open("counts.out"):
 		nodeline.append(int(ele))
 	GDV.append(nodeline)
 
+
 DominatingSet=set()
 i=0
 for i in range(0,numNodes):
@@ -53,7 +55,7 @@ for i in range(0,numNodes):
 	elif(GDV[i][0]==1):
 		for n in nodes[i].neighborList:
 			if(nodes[n].isDominating==0):
-				DominatingSet.add(n)
+				DominatingSet.add(initialNodes[n].nodeID)
 				nodes[n].isDominating=1
 for i in range(0,numNodes):
 	if(GDV[i][2]==1 and GDV[i][0]==2):
@@ -63,12 +65,12 @@ for i in range(0,numNodes):
 			degrees.append(GDV[n][0])
 			neighbors.append(n)
 		if(degrees[0]>degrees[1]):
-			DominatingSet.add(neighbors[0])
+			DominatingSet.add(initialNodes[neighbors[0]].nodeID)
 		elif(degrees[1]>degrees[0]):
-			DominatingSet.add(neighbors[1])
+			DominatingSet.add(initialNodes[neighbors[1]].nodeID)
 		else:
 			node=random.randint(0,1)
-			DominatingSet.add(neighbors[node])
+			DominatingSet.add(initialNodes[neighbors[node]].nodeID)
 for i in range(0,numNodes):
 	if GDV[i][3]==1 and GDV[i][0]==2:
 		degrees=[]
@@ -77,12 +79,12 @@ for i in range(0,numNodes):
 			degrees.append(GDV[n][0])
 			neighbors.append(n)
 		if(degrees[0]>degrees[1]):
-			DominatingSet.add(neighbors[0])
+			DominatingSet.add(initialNodes[neighbors[0]].nodeID)
 		elif(degrees[1]>degrees[0]):
-			DominatingSet.add(neighbors[1])
+			DominatingSet.add(nodes[neighbors[1]].nodeID)
 		else:
 			node=random.randint(0,1)
-			DominatingSet.add(neighbors[node])
+			DominatingSet.add(initialNodes[neighbors[node]].nodeID)
 for i in range(0,numNodes):
 	if(GDV[i][0]==3 and GDV[i][13]==1):
 		degrees=[]
@@ -91,14 +93,14 @@ for i in range(0,numNodes):
 			degrees.append(GDV[n][0])
 			neighbors.append(n)
 		if(degrees[0]>degrees[1] and degrees[0]>degrees[2]):
-			DominatingSet.add(neighbors[0])
+			DominatingSet.add(initialNodes[neighbors[0]].nodeID)
 		elif(degrees[1]>degrees[0] and degrees[1]>degrees[2]):
-			DominatingSet.add(neighbors[1])
+			DominatingSet.add(initialNodes[neighbors[1]].nodeID)
 		elif(degrees[2]>degrees[0] and degrees[2]>degrees[1]):
-			DominatingSet.add(neighbors[2])
+			DominatingSet.add(initialNodes[neighbors[2]].nodeID)
 		else:
 			node=random.randint(0,2)
-			DominatingSet.add(neighbors[node])
+			DominatingSet.add(initialNodes[neighbors[node]].nodeID)
 for i in range(0,numNodes):
 	if(GDV[i][0]==3 and GDV[i][14]==1):
 		degrees=[]
@@ -107,14 +109,15 @@ for i in range(0,numNodes):
 			degrees.append(GDV[n][0])
 			neighbors.append(n)
 		if(degrees[0]>degrees[1] and degrees[0]>degrees[2]):
-			DominatingSet.add(neighbors[0])
+			DominatingSet.add(initialNodes[neighbors[0]].nodeID)
 		elif(degrees[1]>degrees[0] and degrees[1]>degrees[2]):
-			DominatingSet.add(neighbors[1])
+			DominatingSet.add(initialNodes[neighbors[1]].nodeID)
 		elif(degrees[2]>degrees[0] and degrees[2]>degrees[1]):
-			DominatingSet.add(neighbors[2])
+			DominatingSet.add(initialNodes[neighbors[2]].nodeID)
 		else:
 			node=random.randint(0,2)
-			DominatingSet.add(neighbors[node])
+			DominatingSet.add(initialNodes[neighbors[node]].nodeID)
+
 			
 for n in DominatingSet:
 	nodes[n].isDominating=1
@@ -122,3 +125,21 @@ for n in DominatingSet:
 	for i in nodes[n].neighborList:
 		nodes[i].isDominated=1
 print DominatingSet
+
+#everything above here works
+
+out = open('temp.el','w')
+
+numNodes = len(nodes)
+numEdges=0
+for n in nodes:
+        numEdges += len(n.neighborList)
+        for edge in n.neighborList:
+                out.write(n.nodeID+' '+edge+'\n')
+out.close()
+numEdges=numEdges/2
+
+removeDuplicates(numNodes,numEdges,'temp.el','iteration.el')
+
+print numNodes
+print numEdges
