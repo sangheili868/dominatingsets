@@ -15,7 +15,7 @@ Script to detect duplicate nodes in a tab seperated node list
 '''
 
 FILE_PATH = './AirportData.csv'
-DELIM = ','
+DELIM = ' '
 
 
 fd = None
@@ -36,7 +36,7 @@ for line in fd.readlines():
 	if (nodes[1] in edges and (nodes[0] in edges[nodes[1]])) or (nodes[0] in edges and (nodes[1] in edges[nodes[0]])):
 		duplicates += 1
 	else: 
- 		out.write(nodes[0] + ',' + nodes[1] + ',' + '1' + '\n')         
+ 		out.write(nodes[0] + ' ' + nodes[1] + '\n')         
  		if nodes[0] in edges:
 			edges[nodes[0]].append(nodes[1])
 		else:
