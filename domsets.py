@@ -35,7 +35,6 @@ with open(inFile) as f:
 		nodes[origin].neighborList.add(destination)
 		nodes[destination].neighborList.add(origin)	
 	
-
 # Get GDVs
 call(["./orca", "4", inFile, "counts.out"])
 GDV=[]
