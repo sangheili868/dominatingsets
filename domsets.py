@@ -40,9 +40,10 @@ with open(inFile) as f:
 call(["./orca", "4", inFile, "counts.out"])
 GDV=[]
 for line in open("counts.out"):
-	GDV.append(line[:-1].split(" "))
-
-print nodes
+	nodeline=[]
+	for ele in line[:-1].split(" "):
+		nodeline.append(int(ele))
+	GDV.append(nodeline)
 
 DominatingSet=[]
 i=0
@@ -123,5 +124,6 @@ for n in range(0,len(DominatingSet)):
 	for i in nodes[DominatingSet[n]].neighborList:
 		nodes[i.id].isDominated=1
 
+print GDV
 print DominatingSet
 
