@@ -1,9 +1,18 @@
 def sortList(node_list):
 	'''
-	Description: Merge sorts a list of integers
-	Input: list of integers
+	Description: Merge sorts a list of integers or node objects
+	Input: list of integers or Node objects
 	Ouput: None
 	'''
+
+	isNode = None
+	if type(node_list[0]) == Node:
+		isNode = True
+	elif type(node_list[0]) == int:
+		isNode = False
+	else:
+		print("Not a supported type to sort")
+
 	if len(node_list) > 1:
 		mid = len(node_list) // 2
 		lefthalf = node_list[:mid]
@@ -15,7 +24,17 @@ def sortList(node_list):
 		j=0
 		k=0
 		while i < len(lefthalf) and j < len(righthalf):
-			if lefthalf[i] < righthalf[j]:
+			#Get left and right half based on datatype being sorted
+			leftHalf = None
+			rightHalf = None		
+			if isNode:
+				leftHalf = lefthalf[i].nodeID
+				rightHalf = righthalt[j].nodeID
+			else:
+				leftHalf = lefhalf[i]
+				rightHalf = righthalf[j]
+
+			if leftHalf < rightHalf:
 				node_list[k] = lefthalf[i]
 				i = i+1
 			else:
@@ -33,45 +52,9 @@ def sortList(node_list):
 			j=j+1
 			k=k+1
 
-def sortNodes(node_list):
-	'''
-	Description: Merge sorts a list of Node objects
-	Input: list of Nodes
-	Ouput: None
-	'''
-	if len(node_list) > 1:
-		mid = len(node_list) // 2
-		lefthalf = node_list[:mid]
-		righthalf = node_list[mid:]
-		sortNodeList(lefthalf)
-		sortNodeList(righthalf)
-
-		i=0
-		j=0
-		k=0
-		while i < len(lefthalf) and j < len(righthalf):
-			if lefthalf[i].nodeID < righthalf[j].nodeID:
-				node_list[k].nodeID = lefthalf[i].nodeID
-				i = i+1
-			else:
-				node_list[k].nodeID = righthalf[j].nodeID
-				j = j+1
-			k = k+1
-
-		while i < len(lefthalf):
-			node_list[k].nodeID = lefthalf[i].nodeID
-			i=i+1
-			k=k+1
-
-		while j < len(righthalf):
-			node_list[k].nodeID = righthalf[j].nodeID
-			j=j+1
-			k=k+1
-	
-
 def nodeInList(node_list, node_num):
 	'''
-	Description: Checks if a node object with id is in the node_list of node id integers in ascending order
+	Description: Checks if integer node_num is in the array of integers node_list
 
 	Input: node_list - integer list of node for entire graph sorted with lowest node id at index 0
 	       node_num - the id of the node to look for in the node_list
@@ -92,6 +75,33 @@ def nodeInList(node_list, node_num):
 				first = midpoint + 1	
 	return False
 
+
+def findNode(node_list, node_num):
+	'''
+	Description: Returns a node object with nodeID node_num if found in node_list
+
+	Input: node_list - list of node objects for entire graph sorted with lowest node id at index 0
+	       node_num - the id of the node to look for in the node_list
+
+	Output: Returns a node object matching the node_num or None if not present in list
+	'''
+	first = 0
+	last = len(node_list) - 1
+
+	while first <= last:
+		midpoint = (first + last) // 2
+		if node_list[midpoint].nodeID == node_num:
+			return node_list[midpoint]
+		else:
+			if node_num < node_list[midpoint]:
+				last = midpoint - 1
+			else:
+				first = midpoint + 1	
+	print("findNode unable to locate node_num " + str(node_num))
+	return None
+
+
+
 def neighborsDominated(initial_node_list, node):
 	'''
 	Description: Determines whether all neighbors of given node are connected to a node in the
@@ -104,7 +114,7 @@ def neighborsDominated(initial_node_list, node):
 		false otherwise
 	'''
 	for neighbor_node in node.neighborList:
-		if not initial_node_list[neighbor_node].isDominated:
+		if not findNode(initial_node_list, neighbor_node).isDominated:
 			return False
 	return True
 
@@ -120,13 +130,15 @@ def oneUndominatedNeighbor(initial_node_list, node):
 	Output: returns true if all the neigbors but one of node_id are connected to the dominating set,
 		false otherwise
 	'''
-	connectedNeighbors = 0
+	undominatedNeighbors = 0
 	for neighbor_node in node.neighborList:
-		if initial_node_list[neighbor_node].isDominated:
-			connectedNeighbors += 1
-			if connectedNeighbors > 1:
+		if not findNode(initial_node_list, neighbor_node).isDominated:
+			undominatedNeighbors += 1
+			#break early if we exceed one to save some looking
+			if undominatedNeighbors > 1:
 				return False
-	if connectedNeighbors == 1:
+
+	if undominatedNeighbors == 1:
 		return True
 	else:
 		return False
@@ -149,14 +161,15 @@ def pruneGraph(initial_node_list, current_node_list, dom_set):
 
 	Ouput: node_list pruned according to the algorithm rules
 	'''
+
 	dom_set_list = list(dom_set)
 	sortList(dom_set_list)
-	sortNodes(current_node_list)
+	sortList(current_node_list)
 	pruned_graph = []
 	for node in current_node_list:
 		if nodeInList(dom_set_list, node.nodeID):
 			continue
-		elif node.isDominated and neighborsDominated(initial_node_list, node):
+		elif node.isDominated and neighborsDominated(current_node_list, node):
 			continue
 		elif node.isDominated and oneUndominatedNeighbor(initial_node_list, node):
 			continue
