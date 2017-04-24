@@ -19,3 +19,8 @@ if __name__ == "__main__":
 		dom_set_additions = getDomSet.getDomSetNodes(curr_graph, GDV)
 		tot_dom_set = tot_dom_set.union(dom_set_additions)
 		curr_graph = prune.pruneGraph(init_graph, curr_graph, tot_dom_set)
+
+		'''
+		Is this removeDuplicates written? It would be much better if we didn't have to read and write from a file
+		'''
+		removeDuplicates(numNodes,numEdges,'temp.el','iteration.el')

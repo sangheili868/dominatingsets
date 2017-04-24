@@ -58,7 +58,16 @@ def writeGraph(node_list, outfile):
 
 	Ouput: None
 	'''
-	raise NotImplementedError
+	out = open('temp.el','w')
+	numNodes = len(node_list)
+	numEdges=0
+	for n in nodes:
+		numEdges += len(n.neighborList)
+		for edge in n.neighborList:
+			out.write(n.nodeID + ' ' + edge + '\n')
+	out.close()
+	numEdges = numEdges/2
+
 
 def calcGDVs(inFile):
 	'''
