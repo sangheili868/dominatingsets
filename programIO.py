@@ -52,22 +52,27 @@ def readGraph(inFile):
 	
 def writeGraph(node_list, outfile):
 	'''
-	Description: Write the given graph to outfile
+	Description: Write the given graph to outfile in el format
 
 	Input: node_list - list of node objects that represents a graph to write to the file
 
 	Ouput: None
 	'''
-	out = open('temp.el','w')
-	numNodes = len(node_list)
-	numEdges=0
-	for n in nodes:
-		numEdges += len(n.neighborList)
-		for edge in n.neighborList:
-			out.write(n.nodeID + ' ' + edge + '\n')
-	out.close()
-	numEdges = numEdges/2
-
+	#TODO This function doesn't work correctly
+	try:
+		out = open(outfile,'w')
+		numNodes = len(node_list)
+		numEdges = 0
+		outfile.write(str(numNodes) + ' ' + str(numEdges
+		for n in nodes:
+			numEdges += len(n.neighborList)
+			for edge in n.neighborList:
+				out.write(n.nodeID + ' ' + edge + '\n')
+		out.close()
+		numEdges = numEdges/2
+	except EnvironmentError:
+		print('Unable to write graph to ' + str(outfile)
+		exit(0)
 
 def calcGDVs(inFile):
 	'''
