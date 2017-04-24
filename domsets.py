@@ -1,124 +1,21 @@
-from subprocess import call
-import random
-from sys import argv
-import csv
+import programIO
+import prune
+import getDomSet
 
-class Node(object):
-	def __init__(self, nid):
-		self.nodeID=nid
-		self.neighborList=set()
-		self.isDominating=0
-		self.isDominated=0
-	def __repr__(self):
-		return "Node id: " + str(self.nodeID) + "\nList Size: " + str(len(self.neighborList))+"\n"
+if __name__ == "__main__":
+	infile      = programIO.parseCommandLineArgs()
+	init_graph  = programIO.readGraph(infile)
+	curr_graph  = init_graph[:]
+	tot_dom_set = set()
+	TMP_FILE    = 'tmp_graph_file.in'
+	iterations = 0	
 
-
-# get input file
-if len(argv) != 2:
-	print("Usage: python domsets.py inFile")
-	exit(0)
-script, inFile = argv
-
-# build list of nodes and neighbor lists
-nodes=[]
-with open(inFile) as f:
-	numNodes, numEdges = f.readline()[:-1].split(" ")
-	numNodes = int(numNodes)
-	numEdges = int(numEdges)
-	# create node objects
-	for i in xrange(numNodes):
-		nodes.append(Node(i))
-	# add neighbors
-	for line in f:
-		origin, destination = line[:-1].split(" ")
-		origin=int(origin)
-		destination=int(destination)
-		nodes[origin].neighborList.add(destination)
-		nodes[destination].neighborList.add(origin)	
-	
-# Get GDVs
-call(["./orca", "4", inFile, "counts.out"])
-GDV=[]
-for line in open("counts.out"):
-	nodeline=[]
-	for ele in line[:-1].split(" "):
-		nodeline.append(int(ele))
-	GDV.append(nodeline)
-
-DominatingSet=set()
-i=0
-for i in range(0,numNodes):
-	if(GDV[i][0]==0):
-		DominatingSet.add(i)
-	elif(GDV[i][0]==1):
-		for n in nodes[i].neighborList:
-			if(nodes[n].isDominating==0):
-				DominatingSet.add(n)
-				nodes[n].isDominating=1
-for i in range(0,numNodes):
-	if(GDV[i][2]==1 and GDV[i][0]==2):
-		degrees=[]
-		neighbors=[]
-		for n in nodes[i].neighborList:
-			degrees.append(GDV[n][0])
-			neighbors.append(n)
-		if(degrees[0]>degrees[1]):
-			DominatingSet.add(neighbors[0])
-		elif(degrees[1]>degrees[0]):
-			DominatingSet.add(neighbors[1])
-		else:
-			node=random.randint(0,1)
-			DominatingSet.add(neighbors[node])
-for i in range(0,numNodes):
-	if GDV[i][3]==1 and GDV[i][0]==2:
-		degrees=[]
-		neighbors=[]
-		for n in nodes[i].neighborList:
-			degrees.append(GDV[n][0])
-			neighbors.append(n)
-		if(degrees[0]>degrees[1]):
-			DominatingSet.add(neighbors[0])
-		elif(degrees[1]>degrees[0]):
-			DominatingSet.add(neighbors[1])
-		else:
-			node=random.randint(0,1)
-			DominatingSet.add(neighbors[node])
-for i in range(0,numNodes):
-	if(GDV[i][0]==3 and GDV[i][13]==1):
-		degrees=[]
-		neighbors=[]
-		for n in nodes[i].neighborList:
-			degrees.append(GDV[n][0])
-			neighbors.append(n)
-		if(degrees[0]>degrees[1] and degrees[0]>degrees[2]):
-			DominatingSet.add(neighbors[0])
-		elif(degrees[1]>degrees[0] and degrees[1]>degrees[2]):
-			DominatingSet.add(neighbors[1])
-		elif(degrees[2]>degrees[0] and degrees[2]>degrees[1]):
-			DominatingSet.add(neighbors[2])
-		else:
-			node=random.randint(0,2)
-			DominatingSet.add(neighbors[node])
-for i in range(0,numNodes):
-	if(GDV[i][0]==3 and GDV[i][14]==1):
-		degrees=[]
-		neighbors=[]
-		for n in nodes[i].neighborList:
-			degrees.append(GDV[n][0])
-			neighbors.append(n)
-		if(degrees[0]>degrees[1] and degrees[0]>degrees[2]):
-			DominatingSet.add(neighbors[0])
-		elif(degrees[1]>degrees[0] and degrees[1]>degrees[2]):
-			DominatingSet.add(neighbors[1])
-		elif(degrees[2]>degrees[0] and degrees[2]>degrees[1]):
-			DominatingSet.add(neighbors[2])
-		else:
-			node=random.randint(0,2)
-			DominatingSet.add(neighbors[node])
-			
-for n in DominatingSet:
-	nodes[n].isDominating=1
-	nodes[n].isDominated=1
-	for i in nodes[n].neighborList:
-		nodes[i].isDominated=1
-print DominatingSet
+	while len(curr_graph) != 0:
+		iterations += 1
+		print('Begining iteration ' + str(iterations))
+		
+		saveToFile(curr_graph, TMP_FILE)
+		GDV = programIO.calcGDVs(TMP_FILE)
+		dom_set_additions = getDomSet.getDomSetNodes(curr_graph, GDV)
+		tot_dom_set = tot_dom_set.union(dom_set_additions)
+		curr_graph = prune.pruneGraph(init_graph, curr_graph, tot_dom_set)
