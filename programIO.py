@@ -50,29 +50,47 @@ def readGraph(inFile):
 		print('Unable to open file ' + inFile)
 		exit(0)	
 	
-def writeGraph(node_list, outfile):
-	'''
-	Description: Write the given graph to outfile in el format
+def writeGraph(node_list, outfile): 
+        #Takes a list of nodes and an output file destination as its input. Returns an edge list representation of the graph contained in node_list
+        
+        call(["rm","temp.el"])
+        tmpOut = open('temp.el','w') # holds the edge list with duplicates
+        numNodes = len(node_list)
+        numEdges=0
+        for n in node_list: #print all source/destination pairs to temp.el
+                numEdges += len(n.neighborList)
+                for edge in n.neighborList:
+                        tmpOut.write(n.nodeID+' '+edge+'\n')
+        out.close()
+        numEdges=numEdges/2
+        fd = None
+        out = None
+        DELIM=' '
+        try:
+                fd = open('temp.el','r')
+                out = open(outfile, 'w')
+        except:
+                print "Issue opening file"
 
-	Input: node_list - list of node objects that represents a graph to write to the file
+        edges = {}
+        duplicates = 0
+        out.write(str(numNodes)+' '+str(numEdges))
+        for line in fd.readlines():
+                nodes = line.split(DELIM)
+                nodes[1] = nodes[1].strip() # get rid of the \n
 
-	Ouput: None
-	'''
-	#TODO This function doesn't work correctly
-	try:
-		out = open(outfile,'w')
-		numNodes = len(node_list)
-		numEdges = 0
-		outfile.write(str(numNodes) + ' ' + str(numEdges
-		for n in nodes:
-			numEdges += len(n.neighborList)
-			for edge in n.neighborList:
-				out.write(n.nodeID + ' ' + edge + '\n')
-		out.close()
-		numEdges = numEdges/2
-	except EnvironmentError:
-		print('Unable to write graph to ' + str(outfile)
-		exit(0)
+                if (nodes[1] in edges and (nodes[0] in edges[nodes[1]])) or (nodes[0] in edges and (nodes[1] in edges[nodes[0]])):
+                        duplicates += 1
+                else: 
+                        out.write(nodes[0] + ' ' + nodes[1] + '\n')         
+                        if nodes[0] in edges:
+                                edges[nodes[0]].append(nodes[1])
+                        else:
+                                edges[nodes[0]] = [nodes[1]]
+        try:
+                fd.close()
+        except:
+                print "Issue closing file"
 
 def calcGDVs(inFile):
 	'''
