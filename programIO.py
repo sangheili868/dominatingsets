@@ -22,7 +22,8 @@ def parseCommandLineArgs():
 
 def readGraph(inFile):
 	'''
-	Description: Read a graph from infile. See example.in for format
+	Description: Read a graph from an .el format file. Make sure the nodes in the 
+		     left column go up numerically
 
 	Input: String file name to read graph from
 
@@ -60,6 +61,7 @@ def writeGraph(node_list, outfile):
 
         Output: None
         '''
+
         #Temporarily store edges with duplicates in a list of tuples
         edges = []
         for node in node_list:
@@ -71,21 +73,26 @@ def writeGraph(node_list, outfile):
         num_edges = 0
         for start_node, end_node in edges:
              if not ((end_node in final_edges and start_node in final_edges[end_node]) 
-                  or (start_node in final_edges and end_node in edges[start_node])):
+                  or (start_node in final_edges and end_node in final_edges[start_node])):
                   if start_node in final_edges:
                        final_edges[start_node].append(end_node)
                   else:
                        final_edges[start_node] = [end_node]
                   num_edges += 1
-        
+
+	#Rename the node id's to make orca happy
+	name_mapping = {}   
+	for i, node in enumerate(node_list):
+		name_mapping[node.nodeID] = i
+
         #Write the graph to outfile
         try:
              with open(outfile, 'w') as fd:
                   num_nodes = len(node_list)
                   fd.write(str(num_nodes) + ' ' + str(num_edges) + '\n')
-                  for start_node in final_edges:
-                       for end_node in final_edges[start_node]:
-                            fd.write(str(start_node) + ' ' + str(end_node) + '\n')
+                  for start_node, end_nodes in sorted(final_edges.iteritems()):
+                       for end_node in end_nodes:
+                            fd.write(str(name_mapping[start_node]) + ' ' + str(name_mapping[end_node]) + '\n')
                   fd.flush()
 
         except EnvironmentError:

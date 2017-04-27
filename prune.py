@@ -63,7 +63,7 @@ def nodeInList(node_list, node_num):
 	Input: node_list - integer list of node for entire graph sorted with lowest node id at index 0
 	       node_num - the id of the node to look for in the node_list
 
-	Output: True if the node_num is found in node_list, false otherwise
+	Output: True if the node_num is found in node_list, false otherwise. Followed by the index in node_list
 	'''
 	first = 0
 	last = len(node_list) - 1
@@ -96,6 +96,29 @@ def findNode(node_list, node_num):
 		midpoint = (first + last) // 2
 		if node_list[midpoint].nodeID == node_num:
 			return node_list[midpoint]
+		else:
+			if node_num < node_list[midpoint].nodeID:
+				last = midpoint - 1
+			else:
+				first = midpoint + 1	
+	raise LookupError('findNode unable to find a node with id node_num in node_list')
+
+def findNodeIndex(node_list, node_num):
+	'''
+	Description: Returns the index of node object with node_num in node_list
+
+	Input: node_list - list of node objects for entire graph sorted with lowest node id at index 0
+	       node_num - the id of the node to look for in the node_list
+
+	Output: Returns an integer index
+	'''
+	first = 0
+	last = len(node_list) - 1
+
+	while first <= last:
+		midpoint = (first + last) // 2
+		if node_list[midpoint].nodeID == node_num:
+			return midpoint
 		else:
 			if node_num < node_list[midpoint].nodeID:
 				last = midpoint - 1
