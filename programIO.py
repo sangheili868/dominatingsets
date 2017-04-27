@@ -50,47 +50,47 @@ def readGraph(inFile):
 		print('Unable to open file ' + inFile)
 		exit(0)	
 	
+
 def writeGraph(node_list, outfile): 
-        #Takes a list of nodes and an output file destination as its input. Returns an edge list representation of the graph contained in node_list
+        '''
+        Description: Takes a list of node object and writes the graph they make in el format to outfile
+
+        Input: node_list - list of node objects that make up the graph
+               outfile - path of the file to write the graph to. Will be truncated
+
+        Output: None
+        '''
+        #Temporarily store edges with duplicates in a list of tuples
+        edges = []
+        for node in node_list:
+             for neighbor in node.neighborList:
+                  edges.append((node.nodeID, neighbor))
         
-        call(["rm","temp.el"])
-        tmpOut = open('temp.el','w') # holds the edge list with duplicates
-        numNodes = len(node_list)
-        numEdges=0
-        for n in node_list: #print all source/destination pairs to temp.el
-                numEdges += len(n.neighborList)
-                for edge in n.neighborList:
-                        tmpOut.write(n.nodeID+' '+edge+'\n')
-        out.close()
-        numEdges=numEdges/2
-        fd = None
-        out = None
-        DELIM=' '
+        #Remove duplicates (like a -> b and b -> a, keep only a -> b)
+        final_edges = {}
+        num_edges = 0
+        for start_node, end_node in edges:
+             if not ((end_node in final_edges and start_node in final_edges[end_node]) 
+                  or (start_node in final_edges and end_node in edges[start_node])):
+                  if start_node in final_edges:
+                       final_edges[start_node].append(end_node)
+                  else:
+                       final_edges[start_node] = [end_node]
+                  num_edges += 1
+        
+        #Write the graph to outfile
         try:
-                fd = open('temp.el','r')
-                out = open(outfile, 'w')
-        except:
-                print "Issue opening file"
+             with open(outfile, 'w') as fd:
+                  num_nodes = len(node_list)
+                  fd.write(str(num_nodes) + ' ' + str(num_edges) + '\n')
+                  for start_node in final_edges:
+                       for end_node in final_edges[start_node]:
+                            fd.write(str(start_node) + ' ' + str(end_node) + '\n')
+                  fd.flush()
 
-        edges = {}
-        duplicates = 0
-        out.write(str(numNodes)+' '+str(numEdges))
-        for line in fd.readlines():
-                nodes = line.split(DELIM)
-                nodes[1] = nodes[1].strip() # get rid of the \n
-
-                if (nodes[1] in edges and (nodes[0] in edges[nodes[1]])) or (nodes[0] in edges and (nodes[1] in edges[nodes[0]])):
-                        duplicates += 1
-                else: 
-                        out.write(nodes[0] + ' ' + nodes[1] + '\n')         
-                        if nodes[0] in edges:
-                                edges[nodes[0]].append(nodes[1])
-                        else:
-                                edges[nodes[0]] = [nodes[1]]
-        try:
-                fd.close()
-        except:
-                print "Issue closing file"
+        except EnvironmentError:
+             print('Unable to open file ' + outfile)
+             exit(0)
 
 def calcGDVs(inFile):
 	'''
