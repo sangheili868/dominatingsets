@@ -1,4 +1,5 @@
 from Node import Node
+from getDomSet import *
 
 def sortList(node_list):
 	'''
@@ -80,52 +81,6 @@ def nodeInList(node_list, node_num):
 	return False
 
 
-def findNode(node_list, node_num):
-	'''
-	Description: Returns a node object with nodeID node_num if found in node_list
-
-	Input: node_list - list of node objects for entire graph sorted with lowest node id at index 0
-	       node_num - the id of the node to look for in the node_list
-
-	Output: Returns a node object matching the node_num or None if not present in list
-	'''
-	first = 0
-	last = len(node_list) - 1
-
-	while first <= last:
-		midpoint = (first + last) // 2
-		if node_list[midpoint].nodeID == node_num:
-			return node_list[midpoint]
-		else:
-			if node_num < node_list[midpoint].nodeID:
-				last = midpoint - 1
-			else:
-				first = midpoint + 1	
-	raise LookupError('findNode unable to find a node with id node_num in node_list')
-
-def findNodeIndex(node_list, node_num):
-	'''
-	Description: Returns the index of node object with node_num in node_list
-
-	Input: node_list - list of node objects for entire graph sorted with lowest node id at index 0
-	       node_num - the id of the node to look for in the node_list
-
-	Output: Returns an integer index
-	'''
-	first = 0
-	last = len(node_list) - 1
-
-	while first <= last:
-		midpoint = (first + last) // 2
-		if node_list[midpoint].nodeID == node_num:
-			return midpoint
-		else:
-			if node_num < node_list[midpoint].nodeID:
-				last = midpoint - 1
-			else:
-				first = midpoint + 1	
-	raise LookupError('findNode unable to find a node with id node_num in node_list')
-
 
 
 def neighborsDominated(initial_node_list, node):
@@ -192,7 +147,7 @@ def propogateNodeRemoval(node_to_remove, current_graph):
 				
 			
 
-def pruneGraph(initial_node_list, current_node_list, dom_set):
+def pruneGraph(initial_node_list, current_node_list, dom_set, last_num_nodes):
 	'''
 	Description: Removes node from node_list if:
 			node is in dom_set_list
@@ -206,6 +161,8 @@ def pruneGraph(initial_node_list, current_node_list, dom_set):
 	Input: initial_node_list - list of node objects initially/globally in the graph
 	       current_node_list - list of all node objects currently in graph for this pruning round
 	       dom_set - set of all node objects in the dominating set
+	       last_num_nodes - number of nodes in last iteration of the graph. If it doesn't change,
+				we do a tie-break.
 
 	Ouput: node_list pruned according to the algorithm rules
 	'''
@@ -226,9 +183,18 @@ def pruneGraph(initial_node_list, current_node_list, dom_set):
 		else:
 			pruned_graph.append(node)
 	
+	if len(pruned_graph) == last_num_nodes:
+		node_to_remove = highestDegNode(pruned_graph)
+		removed_graph.append(node_to_remove)
+		dom_set.add(node_to_remove.nodeID)
+		for i, node in enumerate(pruned_graph):
+			if node.nodeID == node_to_remove.nodeID:
+				del pruned_graph[i]
+		
 	for node in removed_graph:
 		propogateNodeRemoval(node, pruned_graph)
-	
-	return pruned_graph
+		
+	last_num_nodes = len(pruned_graph)		
+	return pruned_graph, last_num_nodes
 
 

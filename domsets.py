@@ -10,7 +10,7 @@ if __name__ == "__main__":
 	tot_dom_set = set()
 	TMP_FILE    = 'tmp_graph_file.el'
 	iterations = 0	
-
+	last_num_nodes = 0
 
 	while len(curr_graph) != 0:
 		iterations += 1
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 		GDV = programIO.calcGDVs(TMP_FILE)
 		dom_set_additions, init_graph = getDomSet.getDomSetNodes(curr_graph, init_graph, GDV)
 		tot_dom_set = tot_dom_set.union(dom_set_additions)
-		curr_graph = prune.pruneGraph(init_graph, curr_graph, tot_dom_set)
+		curr_graph, last_num_nodes = prune.pruneGraph(init_graph, curr_graph, tot_dom_set, last_num_nodes)
 
 	print('Found a dominating set of size ' + str(len(tot_dom_set)))
 	
