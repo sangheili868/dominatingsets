@@ -4,10 +4,8 @@ from Node import Node
 def findNode(node_list, node_num):
 	'''
 	Description: Returns a node object with nodeID node_num if found in node_list
-
 	Input: node_list - list of node objects for entire graph sorted with lowest node id at index 0
 	       node_num - the id of the node to look for in the node_list
-
 	Output: Returns a node object matching the node_num or None if not present in list
 	'''
 	first = 0
@@ -28,10 +26,8 @@ def findNode(node_list, node_num):
 def findNodeIndex(node_list, node_num):
 	'''
 	Description: Returns the index of node object with node_num in node_list
-
 	Input: node_list - list of node objects for entire graph sorted with lowest node id at index 0
 	       node_num - the id of the node to look for in the node_list
-
 	Output: Returns an integer index
 	'''
 	first = 0
@@ -52,10 +48,8 @@ def hasDomSetNeighbor(node, dom_set):
 	'''
 	Description: takes a node object and returns true if it has a neighbor in the 
 		     dominating set, false otherwise
-
 	Input: node - a node object
 	       dom_set - a python set with nodeID's of the dominating set nodes
-
 	Output: Boolean value
 	'''
 	for neighbor in node.neighborList:
@@ -66,13 +60,15 @@ def hasDomSetNeighbor(node, dom_set):
 def pickRandom(node_list):
 	'''
 	Description: Returns a random node from the given list
-
 	Input: node_list - a list of node objects to pick from
-
 	Output: a node object picked from the list
 	'''
 	if node_list == []:
 		raise ValueError('Cannot pick from an empty list')
+		
+	for n in node_list:
+		if n.isDominating==True:
+			return n
 
 	indx = random.randint(0, len(node_list) - 1)
 	return node_list[indx]
@@ -80,9 +76,7 @@ def pickRandom(node_list):
 def degreeOf(node):
 	'''
 	Description: returns the degree of a given node object
-
 	Input: a node object
-
 	Ouput: integer value for degree of the node
 	'''
 	return len(node.neighborList)
@@ -94,7 +88,6 @@ def orbitCount(node_indx, GDV, orbit):
 	Input: node_indx - integer which is the index of a given node object in nodes
 	       GDV - 2-d array of graphlet degree vectors
 	       orbit - integer which is the orbit to acess. By default returns entire GDV
-
 	Output: an integer if Orbit is given, an array of integers if not
 	'''
 	return GDV[node_indx][orbit]
@@ -105,7 +98,6 @@ def getNeighborNodes(node, sorted_nodes):
 	
 	Input: node - the node object to find a neighbor of
 	       sorted_nodes - the sorted graph the node argument is in
-
 	Ouput: an array of node objects that neighbor the given node
 	'''
 	neighbor_nodes = []
@@ -166,7 +158,6 @@ def getDomSetNodes(curr_graph, init_graph, GDV):
 	'''
 	Description: takes a graph and the GDV for each node in the graph
 		     and generates some nodes in the dominating set for the graph
-
 	Input: curr_graph - an array of nodes that represent the current graph
 	       init_graph - an array of nodes represented the non-pruned graph
 	       GDV - a 2-d array of graphlet degree vectors
@@ -204,5 +195,3 @@ def getDomSetNodes(curr_graph, init_graph, GDV):
 				init_graph[neigh_id].isDominated = True
 				
 	return dom_set, init_graph
-
-
