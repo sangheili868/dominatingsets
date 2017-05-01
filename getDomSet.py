@@ -195,3 +195,4 @@ def getDomSetNodes(curr_graph, init_graph, GDV):
 				init_graph[neigh_id].isDominated = True
 				
 	return dom_set, init_graph
+

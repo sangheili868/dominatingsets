@@ -167,7 +167,6 @@ def pruneGraph(initial_node_list, current_node_list, dom_set, last_num_nodes):
 	Ouput: node_list pruned according to the algorithm rules
 	'''
 	
-	print('Removing nodes for next iteration...')
 	dom_set_list = list(dom_set)
 	sortList(dom_set_list)
 	sortList(current_node_list)
@@ -187,14 +186,20 @@ def pruneGraph(initial_node_list, current_node_list, dom_set, last_num_nodes):
 		node_to_remove = highestDegNode(pruned_graph)
 		removed_graph.append(node_to_remove)
 		dom_set.add(node_to_remove.nodeID)
-		for i, node in enumerate(pruned_graph):
-			if node.nodeID == node_to_remove.nodeID:
-				del pruned_graph[i]
+		remove_indx = findNodeIndex(pruned_graph, node_to_remove.nodeID)
+		del pruned_graph[remove_indx]
+		
+		#Remove neighbors and the node itself from pruned graph
+		for neigh_id in node_to_remove.neighborList:
+			indx = findNodeIndex(pruned_graph, neigh_id)
+			neigh_node = findNode(pruned_graph, neigh_id)
+			removed_graph.append(neigh_node)
+			del pruned_graph[indx]
 		
 	for node in removed_graph:
 		propogateNodeRemoval(node, pruned_graph)
 		
 	last_num_nodes = len(pruned_graph)		
-	return pruned_graph, last_num_nodes
+	return pruned_graph, last_num_nodes, dom_set
 
 
