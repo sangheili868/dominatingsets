@@ -53,3 +53,27 @@ networkx_size_1500_GEO = [1236, 1236, 1236, 1236, 1236]
 
 networkx_time_1500_SF = [2.9, 3.3, 3.3, 3.0, 3.7]
 networkx_size_1500_SF = [292, 292, 292, 292, 292]
+
+highest_deg__time_airports = [1.137, 1.15, 1.126, 1.206, 1.129]
+highest_deg_size_airports = [1056, 1054, 1053, 1047, 1058]
+
+highest_deg_time_email = [.627, .619, .642, .640, .620]
+highest_deg_size_email = [764, 766, 763, 767, 770]
+
+highest_deg_time_5000_ER = [11.6, 11.5, 11.3, 11.9, 11.9]
+highest_deg_size_5000_ER = [4224, 4234, 4155, 4470, 4422]
+
+highest_deg_time_5000_GEO = [12.78, 12.97, 13.813, 12.767, 13.289]
+highest_deg_size_5000_GEO = [4972, 4980, 5072, 4949, 5036]
+
+highest_deg_time_5000_SF = [10.19, 9.989, 9.491, 9.36, 10.92]
+highest_deg_size_5000_SF = [3739, 3586, 3435, 3368, 3611]
+
+highest_deg_time_1500_ER = [.688, .721, .715, .708, .846]
+highest_deg_size_1500_ER = [509, 534, 536, 483, 584]
+
+highest_deg_time_1500_GEO = [1.179, 1.219, 1.233, 1.183, 1.451]
+highest_deg_size_1500_GEO = [1346, 1337, 1435, 1452, 1386]
+
+highest_deg_time_1500_SF = [.923, .644, .636, .624, .644]
+highest_deg_size_1500_SF = [447, 447, 447, 447, 447]

@@ -6,7 +6,7 @@ def findNode(node_list, node_num):
 	Description: Returns a node object with nodeID node_num if found in node_list
 	Input: node_list - list of node objects for entire graph sorted with lowest node id at index 0
 	       node_num - the id of the node to look for in the node_list
-	Output: Returns a node object matching the node_num or None if not present in list
+	Output: Returns a node object matching the node_num
 	'''
 	first = 0
 	last = len(node_list) - 1
@@ -42,7 +42,7 @@ def findNodeIndex(node_list, node_num):
 				last = midpoint - 1
 			else:
 				first = midpoint + 1	
-	raise LookupError('findNode unable to find a node with id node_num in node_list')
+	raise LookupError('findNode unable to find a node with id ' + str(node_num) + ' in node_list')
 
 def hasDomSetNeighbor(node, dom_set):
 	'''

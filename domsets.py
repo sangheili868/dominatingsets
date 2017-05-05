@@ -24,7 +24,8 @@ if __name__ == "__main__":
 		tot_dom_set = tot_dom_set.union(dom_set_additions)
 		curr_graph, last_num_nodes, tot_dom_set = prune.pruneGraph(init_graph, curr_graph, tot_dom_set, last_num_nodes)
 	print('Size of domset is ' + str(len(tot_dom_set)))
-	
+
+	'''	
 	#Double check it's a dominating set with networkx
 	dom_list = list(tot_dom_set)
 	G = nx.Graph()
@@ -36,4 +37,4 @@ if __name__ == "__main__":
 	else:
 		print('Dom set finding failed')
 	
-
+	'''
